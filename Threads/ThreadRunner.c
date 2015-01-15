@@ -130,89 +130,102 @@ void* runTask (void* threadObj)
   //Get the values from the struct.
   struct threadStruct *thread = (struct threadStruct*) threadObj;
   char* threadName = thread->threadName;
-  long hashIterations = thread->iterations;
+  long n = thread->iterations;
+  long i;
+  int x;
+
+  FILE *fp;
+
+  //sched_yield();
+
+  //pthread_mutex_lock (&printfLock);
+
+  //PASTE CODE
+    //Vars required for the fileName and Looping
+    //char fileNumString[sizeof(fileNum)];
+    char loopCounterString[100];
+
   
-  sched_yield();
 
-  pthread_mutex_lock (&printfLock);
+    time_t threadStartTime;
+    time_t threadEndTime;
+    time_t iterationStartTime;
+    time_t iterationEndTime;
 
-   int x;
-   long i;  
-   FILE *fp;
 
-   //Vars required to get currentDateTime
-   time_t threadTime;
-   time_t threadEndTime;
-   time_t iterationStartTime;
-   time_t iterationEndTime;
-   
 
-   //Create the file output name.
-   char fileOutputString[100];
-   strcpy(fileOutputString,"./ThreadFiles/ThreadOutputFile");
-   strcat(fileOutputString,(char *) threadName);
-   strcat(fileOutputString,".txt");
+    char outputFileName[1024];
 
-   fp = fopen(fileOutputString,"a");
+    strcpy(outputFileName, "./ThreadFiles/ThreadTaskOutputFile");
+    //Convert fileNum INT into a String
+          //DEBUG: printf("Before convert,fileNumString: %s",fileNumString);
+          // sprintf(fileNumString,"%d",fileNum);
+          //DEBUG: printf("After convert,fileNumString: %s",fileNumString);
+    strcat(outputFileName, threadName);
+    strcat(outputFileName,".txt");
 
-   threadTime = time(NULL);
-   
-   printf("** %s START** TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadTime)));
-   fprintf(fp, "THREAD START: %s TIME: %s \n", threadName, asctime(localtime(&threadTime)));
-   //fprintf(pFile,"%s start,%s\n",(char*) threadName,asctime( localtime(&threadTime)));
-   
+    char data[1024];    
+    char hash[SHA_DIGEST_LENGTH];
 
- 
-   
+    //DEBUG: printf("Before print, the fileOutputName is: %s",outputFileName);
 
-    for (i = 1; i <= hashIterations; i++)
+    fp = fopen(outputFileName, "w");// "w" means that we are going to write on this file
+
+    threadStartTime = time(NULL);
+    printf("** %s START** TIME %s \n\n",threadName,asctime(localtime(&threadStartTime)));
+    fprintf(fp, "%s START: TIME: %s \n", threadName, asctime(localtime(&threadStartTime)));
+    //fprintf(pFile, "PROCESS %d start,%s \n", processID, asctime(localtime(&threadStart)));
+
+    //RUN FUNCTION HERE
+    for (i = 1; i <= n; i++)
     {
-      //printf("ITERATION %i START \n",i);
       //Convert i to a String
-      //sprintf(loopCounterString,"%ld", i);
-      char data[1024];    
-      char hash[SHA_DIGEST_LENGTH];
-      char loopCounterString[100];
-
-      sprintf(loopCounterString,"%ld",i);
+      sprintf(loopCounterString,"%ld", i);
       strcpy(data, "HASHSTRING");
       //Add value of i  (concatenate) to END of string
       strcat(data,loopCounterString);
       size_t length = sizeof(data);
       //Print string+i
+      //printf("Thing to hash is %s",data);
+      iterationStartTime = time(NULL);
+      fprintf(fp, "ITERATION %ld | TIME: %s \n", i, asctime (localtime(&iterationStartTime)) );
+     
       
       SHA((unsigned char*) data,length,(unsigned char*) hash);
 
 
-      iterationStartTime = time(NULL);
-      fprintf(fp, "ITERATION %ld | START TIME: %s \n", i, asctime (localtime(&iterationStartTime)) );
-     
+
+      //printf("The hash is %x \n",hash);
+      fprintf(fp,"PLAINTEXT: %s\n",data);
+      fprintf(fp,"HASH:\n");
+
       for(x = 0; x < sizeof(hash); x++ )
       {
-    
+     
         fprintf(fp,"%x", (char)hash[x]);
       }
       
       fprintf(fp,"\n");
-  
       
-       
         iterationEndTime = time(NULL);
-        fprintf(fp, "ITERATION %ld | END TIME: %s \n", i, asctime (localtime(&iterationEndTime)));
+       fprintf(fp, "ITERATION %ld | END TIME: %s \n", i, asctime (localtime(&iterationEndTime)));
      
-      }
+    }
 
-     //threadTime = time(NULL);
-     threadEndTime = time(NULL);
-      printf("** %s END** TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
-      fprintf(fp," %s END TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
-      //fprintf(pFile,"%s end,%s\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
-      //fflush(pFile);
-  
-    //fclose(fp);
+  threadEndTime = time(NULL);
+    printf("** %s END** TIME %s \n\n",threadName,asctime(localtime(&threadEndTime)));
+    fprintf(fp, "%s END: TIME: %s \n", threadName, asctime(localtime(&threadEndTime)));
+     //fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&threadEndTime)));
+     //fflush(pFile);
+     
 
 
-    pthread_mutex_unlock (&printfLock);
+
+
+
+
+
+  //pthread_mutex_unlock (&printfLock);
   
    return NULL;
 }
