@@ -12,10 +12,12 @@ int task(int fileNumber, long processNumber, long iterations, FILE *pFile);
 int main (int argc, char *argv[]) 
 {
     pid_t childpid = 0; 
-    int i, n;
+    int i, n, status;
 
-	int status;
-  	pid_t pid;
+    long hashIterations;
+
+  
+    pid_t pid;
 
     //Creating space for vars that will be used later to dicate fileNumber and Process Number in outputfiles.
     //char fileNumber[50];
@@ -29,18 +31,21 @@ int main (int argc, char *argv[])
 
     pFile = fopen("ProcessLogFile.txt","a");
 
-    printf("**PROCESSES PROGRAM START TIME: %s \n", ctime(&curtime1));
-    fprintf(pFile,"**PROCESSES PROGRAM START TIME: %s \n", ctime(&curtime1));
-    fflush(pFile);
-    
 
     if (argc != 2)
       {   /* check for valid number of command-line arguments */ 
-            fprintf(stderr, "Usage: %s processes\n", argv[0]);
+            fprintf(stderr, "Usage: %s hashing iterations\n", argv[0]);
             return 1; 
     }     
 
-    n = atoi(argv[1]);  
+    
+
+    hashIterations = atol(argv[1]);
+    n = 5;  
+
+    printf("**PROCESSES PROGRAM WITH NUMBER OF ITERATIONS: %ld START TIME: %s \n", hashIterations, ctime(&curtime1));
+    fprintf(pFile,"Processes\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&curtime1));
+    fflush(pFile);
 
     for (i = 0; i < n; i++)
       if ((childpid = fork()) <= 0)
@@ -58,7 +63,7 @@ int main (int argc, char *argv[])
           //fprintf(stderr, "**CHILD** i:%d  process ID:%ld  parent ID:%ld  child ID:%ld\n",
            //i, (long)getpid(), (long)getppid(), (long)childpid);
 
-          task(i,(long)getpid(),10000000,pFile);
+          task(i,(long)getpid(),hashIterations,pFile);
 
           break;
 
@@ -79,8 +84,8 @@ int main (int argc, char *argv[])
           time(&curtime2);
           
           //printf("PROGRAM END TIME: %s \n", ctime(&curtime2));
-          fprintf(pFile,"**PROGRAM END TIME**: %s \n", ctime(&curtime2));
-          printf("**PROGRAM END TIME**: %s \n", ctime(&curtime2));
+          fprintf(pFile,"Program End,%s\n", ctime(&curtime2));
+          printf("**PROGRAM END TIME, %s \n", ctime(&curtime2));
 
               break;
           }
@@ -132,7 +137,7 @@ int task(int fileNumber, long processNumber, long iterations, FILE *pFile){
     processStartTime = time(NULL);
     printf("** PROCESS: %d START** TIME %s \n\n",processID,asctime(localtime(&processStartTime)));
     fprintf(fp, "PROCESS START: processID: %d TIME: %s \n", processID, asctime(localtime(&processStartTime)));
-    fprintf(pFile, "PROCESS START: processID: %d TIME: %s \n", processID, asctime(localtime(&processStartTime)));
+    fprintf(pFile, "PROCESS %d start,%s \n", processID, asctime(localtime(&processStartTime)));
 
     //RUN FUNCTION HERE
     for (i = 1; i <= n; i++)
@@ -149,7 +154,7 @@ int task(int fileNumber, long processNumber, long iterations, FILE *pFile){
       fprintf(fp, "ITERATION %ld | TIME: %s \n", i, asctime (localtime(&iterationStartTime)) );
      
       
-      SHA(data,length,hash);
+      SHA((unsigned char*) data,length,(unsigned char*) hash);
 
 
 
@@ -165,15 +170,15 @@ int task(int fileNumber, long processNumber, long iterations, FILE *pFile){
       
       fprintf(fp,"\n");
       
-      	iterationEndTime = time(NULL);
+        iterationEndTime = time(NULL);
        fprintf(fp, "END ITERATION %ld INSIDE PROCESS TIME: %s \n", i, asctime (localtime(&iterationEndTime)));
      
     }
 
-	processEndTime = time(NULL);
+  processEndTime = time(NULL);
     printf("** PROCESS: %d END** TIME %s \n\n",processID,asctime(localtime(&processEndTime)));
     fprintf(fp, "PROCESS END: processID: %d TIME: %s \n", processID, asctime(localtime(&processEndTime)));
-     fprintf(pFile, "PROCESS END: processID: %d TIME: %s \n", processID, asctime(localtime(&processEndTime)));
+     fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&processEndTime)));
      
     return 0; 
 }

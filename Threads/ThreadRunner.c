@@ -11,7 +11,6 @@
 // look up the sched_yield() system call
 
  struct Foo
-
             {
 
                         int x;
