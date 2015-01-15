@@ -8,8 +8,8 @@
 #include <string.h>
 #include <pthread.h>
 
-// look up the sched_yield() system call
 
+//The struct's that will be passed to the executing thread form the main program that details it's name and how many iterations to hash for.
 struct threadStruct
   {
 
@@ -17,7 +17,7 @@ struct threadStruct
 
               long iterations;
 
-  };  /* note semi-colon here */
+  }; 
 
 
 
@@ -27,39 +27,45 @@ void* runTask (void*);
 /*------------ Mutex Variables ---------------------*/
 pthread_mutex_t printfLock = PTHREAD_MUTEX_INITIALIZER;
 
+
+
 int main (int argc, char *argv[])
 {
 
-  
-
+  // THis is the MAIN overall logfile that the threads will write only their START and END times to.
   FILE *pFile;
-
   pFile = fopen("./ThreadLogFile.txt","a");
 
+
+  //time vars required to hold the time.
   time_t programStartTime;
   time_t programEndTime;
 
+  //var that holds the amount of iterations.
   long hashIterations;
 
+  // Check that the user has supplied a number of iterations to hash for.
   if (argc != 2)
       {   /* check for valid number of command-line arguments */ 
             fprintf(stderr, "Usage: %s hashing iterations\n", argv[1]);
             return 1; 
     } 
 
-    //Delete any existing log files
-    system("exec rm -r ./ThreadFiles/*.txt"); 
+  hashIterations = atol(argv[1]);
+     
+  //Delete any existing log files
+  system("exec rm -r ./ThreadFiles/*.txt"); 
 
- hashIterations = atol(argv[1]);
-
-
+  //assign the current time to var
   time(&programStartTime);
 
+  //Print PROGRAM START TIME
   printf("** THREADS PROGRAM START** TIME: %s  \n\n",asctime( localtime(&programStartTime)));
   fprintf(pFile,"Threads\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&programStartTime));
   fflush(pFile);
   //fclose(pFile);
 
+  //Create 5 threads.
   pthread_t thread1, thread2,thread3,thread4,thread5;
   
   //Create the thread structs
@@ -131,14 +137,8 @@ void* runTask (void* threadObj)
   pthread_mutex_lock (&printfLock);
 
    int x;
-   long i;
-
-    //RUN FUNCTION HERE
-   
+   long i;  
    FILE *fp;
-   //FILE *pFile;
-
-   //pFile = fopen("./ThreadLogFile.txt","a");
 
    //Vars required to get currentDateTime
    time_t threadTime;
@@ -147,7 +147,7 @@ void* runTask (void* threadObj)
    time_t iterationEndTime;
    
 
-
+   //Create the file output name.
    char fileOutputString[100];
    strcpy(fileOutputString,"./ThreadFiles/ThreadOutputFile");
    strcat(fileOutputString,(char *) threadName);
@@ -156,6 +156,7 @@ void* runTask (void* threadObj)
    fp = fopen(fileOutputString,"a");
 
    threadTime = time(NULL);
+   
    printf("** %s START** TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadTime)));
    fprintf(fp, "THREAD START: %s TIME: %s \n", threadName, asctime(localtime(&threadTime)));
    //fprintf(pFile,"%s start,%s\n",(char*) threadName,asctime( localtime(&threadTime)));
