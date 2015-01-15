@@ -10,12 +10,12 @@
 
 // look up the sched_yield() system call
 
- struct Foo
+ struct threadStruct
             {
 
-                        int x;
+                        char* threadName;
 
-                        int array[100];
+                        int iterations;
 
             };  /* note semi-colon here */
 
@@ -36,6 +36,17 @@ int main (void)
   time_t programStartTime;
   time_t programEndTime;
 
+  long hashIterations;
+
+  if (argc != 2)
+      {   /* check for valid number of command-line arguments */ 
+            fprintf(stderr, "Usage: %s hashing iterations\n", argv[1]);
+            return 1; 
+    } 
+
+ hashIterations = atol(argv[1]);
+
+
   programStartTime = time(NULL);
 
   printf("** THREADS PROGRAM START** TIME: %s  \n\n",asctime( localtime(&programStartTime)));
@@ -50,12 +61,37 @@ int main (void)
   const char* msg4 = "Thread4";
   const char* msg5 = "Thread5";
 
+  //Create the thread structs
+  struct threadStruct *Thread1;
+  *Thread1.threadName = "Thread1";
+  *Thread1.iterations = hashIterations;
 
-  pthread_create (&thread1, NULL, task, (void*)msg1);
-  pthread_create (&thread2, NULL, task, (void*)msg2);
-  pthread_create (&thread3, NULL, task, (void*)msg3);
-  pthread_create (&thread4, NULL, task, (void*)msg4);
-  pthread_create (&thread5, NULL, task, (void*)msg5);
+  struct threadStruct *Thread2;
+  *Thread2.threadName = "Thread2";
+  *Thread2.iterations = hashIterations;
+
+  struct threadStruct *Thread3;
+  *Thread3.threadName = "Thread3";
+  *Thread3.iterations = hashIterations;
+
+  struct threadStruct *Thread4;
+  *Thread4.threadName = "Thread4";
+  *Thread4.iterations = hashIterations;
+
+  struct threadStruct *Thread5;
+  *Thread5.threadName = "Thread5";
+  *Thread5.iterations = hashIterations;
+
+
+
+
+
+
+  pthread_create (&thread1, NULL, task, (void*)Thread1);
+  pthread_create (&thread2, NULL, task, (void*)Thread2);
+  pthread_create (&thread3, NULL, task, (void*)Thread3);
+  pthread_create (&thread4, NULL, task, (void*)Thread4);
+  pthread_create (&thread5, NULL, task, (void*)Thread5);
 
   pthread_join (thread1, NULL);
   pthread_join (thread2, NULL);
@@ -76,7 +112,7 @@ int main (void)
 }
 
 /*----------  Output Message Function -------------*/
-void* task (void* msg)
+void* task (void* ThreadStruct.threadName)
 {
 
     sched_yield();
@@ -107,13 +143,13 @@ void* task (void* msg)
    time_t threadEndTime;
    threadTime = time(NULL);
 
-   printf("** %s START** TIME: %s  \n\n",(char*) msg,asctime( localtime(&threadTime)));
-   fprintf(pFile," %s START TIME: %s  \n\n",(char*) msg,asctime( localtime(&threadTime)));
+   printf("** %s START** TIME: %s  \n\n",(char*) ThreadStruct.threadName,asctime( localtime(&threadTime)));
+   fprintf(pFile," %s START TIME: %s  \n\n",(char*) ThreadStruct.threadName,asctime( localtime(&threadTime)));
    fflush(pFile);
 
    char fileOutputString[100];
    strcpy(fileOutputString,"./ThreadFiles/ThreadOutputFile");
-   strcat(fileOutputString,(char *) msg);
+   strcat(fileOutputString,(char *) ThreadStruct.threadName);
    strcat(fileOutputString,".txt");
 
    //printf("Output file is %s",fileOutputString);
@@ -151,7 +187,7 @@ void* task (void* msg)
       //printf("The hash is %x \n",hash);
 
       //printf("HASH:\n");
-      fprintf(fp,"ITERATION START %d INSIDE THREAD: %d \n",i,(char *) msg);
+      fprintf(fp,"ITERATION START %d INSIDE THREAD: %d \n",i,(char *) ThreadStruct.threadName);
       fprintf(fp,"PLAINTEXT: %s\n",data);
       fprintf(fp, "HASH:\n");
 
@@ -169,13 +205,13 @@ void* task (void* msg)
        //fprintf(fp, "END ITERATION %ld INSIDE PROCESS TIME: %s \n", i, asctime (timeinfo));
     
       //printf("ITERATION %i END \n\n",i); 
-      fprintf(fp,"ITERATION END %d INSIDE THREAD: %d \n\n",i,(char *) msg);
+      fprintf(fp,"ITERATION END %d INSIDE THREAD: %d \n\n",i,(char *) ThreadStruct.threadName);
     }
 
      //threadTime = time(NULL);
      threadEndTime = time(NULL);
-      printf("** %s END** TIME: %s  \n\n",(char*) msg,asctime( localtime(&threadEndTime) ) );
-      fprintf(pFile," %s END TIME: %s  \n\n",(char*) msg,asctime( localtime(&threadEndTime) ) );
+      printf("** %s END** TIME: %s  \n\n",(char*) ThreadStruct.threadName,asctime( localtime(&threadEndTime) ) );
+      fprintf(pFile," %s END TIME: %s  \n\n",(char*) ThreadStruct.threadName,asctime( localtime(&threadEndTime) ) );
       fflush(pFile);
   
     //fclose(fp);
