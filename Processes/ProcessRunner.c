@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <string.h>
 
-int task(int fileNumber, long processNumber, long iterations, FILE *pFile);
+int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile);
 
 int main (int argc, char *argv[]) 
 {
@@ -16,16 +16,18 @@ int main (int argc, char *argv[])
 
     long hashIterations;
 
+
+
   
-    pid_t pid;
+    //pid_t pid;
 
     //Creating space for vars that will be used later to dicate fileNumber and Process Number in outputfiles.
     //char fileNumber[50];
     
 
     //For dateTime
-    time_t curtime1;
-    time(&curtime1);
+    time_t programStartTime;
+    time(&programStartTime);
 
     FILE *pFile;
 
@@ -36,15 +38,18 @@ int main (int argc, char *argv[])
       {   /* check for valid number of command-line arguments */ 
             fprintf(stderr, "Usage: %s hashing iterations\n", argv[0]);
             return 1; 
-    }     
+    }  
+
+    //Delete any existing log files
+    system("exec rm -r /ProcessFiles/*.txt");   
 
     
 
     hashIterations = atol(argv[1]);
     n = 5;  
 
-    printf("**PROCESSES PROGRAM WITH NUMBER OF ITERATIONS: %ld START TIME: %s \n", hashIterations, ctime(&curtime1));
-    fprintf(pFile,"Processes\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&curtime1));
+    printf("** PROCESSES PROGRAM WITH NUMBER OF ITERATIONS: %ld START TIME: %s \n", hashIterations, ctime(&programStartTime));
+    fprintf(pFile,"Processes\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&programStartTime));
     fflush(pFile);
 
     for (i = 0; i < n; i++)
@@ -63,7 +68,7 @@ int main (int argc, char *argv[])
           //fprintf(stderr, "**CHILD** i:%d  process ID:%ld  parent ID:%ld  child ID:%ld\n",
            //i, (long)getpid(), (long)getppid(), (long)childpid);
 
-          task(i,(long)getpid(),hashIterations,pFile);
+          runTask(i,(long)getpid(),hashIterations,pFile);
 
           break;
 
@@ -74,18 +79,18 @@ int main (int argc, char *argv[])
 
           
           while (n > 0) {
-            pid = wait(&status);
-            printf("Child with PID %ld exited with status 0x%x.\n", (long)pid, status);
+            wait(&status);
+            //printf("Child with PID %ld exited with status 0x%x.\n", (long)pid, status);
             --n;  // TODO(pts): Remove pid from the pids array.
           }
 
-          time_t curtime2;
+          time_t programEndTime;
 
-          time(&curtime2);
+          time(&programEndTime);
           
-          //printf("PROGRAM END TIME: %s \n", ctime(&curtime2));
-          fprintf(pFile,"Program End,%s\n", ctime(&curtime2));
-          printf("**PROGRAM END TIME, %s \n", ctime(&curtime2));
+          //printf("PROGRAM END TIME: %s \n", ctime(&programEndTime));
+          fprintf(pFile,"Program End,%s\n", ctime(&programEndTime));
+          printf("** PROGRAM END TIME, %s \n", ctime(&programEndTime));
 
               break;
           }
@@ -93,7 +98,7 @@ int main (int argc, char *argv[])
     return 0; 
 }
 
-int task(int fileNumber, long processNumber, long iterations, FILE *pFile){
+int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile){
    FILE *fp;
 
 
@@ -171,7 +176,7 @@ int task(int fileNumber, long processNumber, long iterations, FILE *pFile){
       fprintf(fp,"\n");
       
         iterationEndTime = time(NULL);
-       fprintf(fp, "END ITERATION %ld INSIDE PROCESS TIME: %s \n", i, asctime (localtime(&iterationEndTime)));
+       fprintf(fp, "ITERATION %ld | END TIME: %s \n", i, asctime (localtime(&iterationEndTime)));
      
     }
 
@@ -179,6 +184,7 @@ int task(int fileNumber, long processNumber, long iterations, FILE *pFile){
     printf("** PROCESS: %d END** TIME %s \n\n",processID,asctime(localtime(&processEndTime)));
     fprintf(fp, "PROCESS END: processID: %d TIME: %s \n", processID, asctime(localtime(&processEndTime)));
      fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&processEndTime)));
+     fflush(pFile);
      
     return 0; 
 }

@@ -1,36 +1,26 @@
-** THREADS PROGRAM START** TIME: Sat Jan 17 16:40:14 2015
-  
+Threads
+Iterations,100000
+Program Start,Wed Jan 21 16:30:39 2015
 
- Thread1 START TIME: Sat Jan 17 16:40:14 2015
-  
+Thread3 start,Wed Jan 21 16:30:39 2015
 
- Thread1 END TIME: Sat Jan 17 16:44:04 2015
-  
+Thread3 end,Wed Jan 21 16:30:40 2015
 
- Thread2 START TIME: Sat Jan 17 16:44:04 2015
-  
+Thread2 start,Wed Jan 21 16:30:40 2015
 
- Thread2 END TIME: Sat Jan 17 16:45:31 2015
-  
+Thread2 end,Wed Jan 21 16:30:40 2015
 
- Thread3 START TIME: Sat Jan 17 16:45:31 2015
-  
+Thread1 start,Wed Jan 21 16:30:40 2015
 
- Thread3 END TIME: Sat Jan 17 16:46:16 2015
-  
+Thread1 end,Wed Jan 21 16:30:41 2015
 
- Thread5 START TIME: Sat Jan 17 16:46:16 2015
-  
+Thread4 start,Wed Jan 21 16:30:41 2015
 
- Thread5 END TIME: Sat Jan 17 16:47:02 2015
-  
+Thread4 end,Wed Jan 21 16:30:42 2015
 
- Thread4 START TIME: Sat Jan 17 16:47:02 2015
-  
+Thread5 start,Wed Jan 21 16:30:42 2015
 
- Thread4 END TIME: Sat Jan 17 16:47:47 2015
-  
+Thread5 end,Wed Jan 21 16:30:42 2015
 
-** THREADS PROGRAM END** TIME: Sat Jan 17 16:47:47 2015
-  
+Program End,Wed Jan 21 16:30:42 2015
 
