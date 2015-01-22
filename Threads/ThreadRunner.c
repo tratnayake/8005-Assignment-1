@@ -48,7 +48,7 @@ int main (int argc, char *argv[])
     } 
 
     //Delete any existing log files
-    system("exec rm -r /ThreadFiles/*.txt"); 
+    system("exec rm -r ./ThreadFiles/*.txt"); 
 
  hashIterations = atol(argv[1]);
 

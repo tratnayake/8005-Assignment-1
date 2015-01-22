@@ -1,0 +1,55 @@
+PsuedoCode: Processes
+
+Main(number of processes, number of iterations){
+	- Write to main log file the starting time.
+	
+	for loop (i to number of threads){	
+		//fork processes.
+
+		pid = fork();	
+	}
+
+	//handle the different type of processes
+
+	switch(pid){
+		if Unsuccessful forks:
+		error
+
+		if its a child process
+		case 0:
+		run the task(number of iterations); 
+	
+		if its a parent
+		case(anything else):
+
+			loop through number of processes
+			{
+				wait for each process
+				//this next statement only executes if the child is done.
+				subtract -1 number of processes.
+			}
+
+		//All children finished.
+		print ending time-stamp to log file.
+
+		exit.
+	}
+	
+}
+
+run the task(number of iterations){
+	
+	print to main log file that task has started
+	print to individual log file that task has started
+
+	(loop from 0 - number of iterations){
+
+		plaintext = Concatenate "HASHSTRING"+IterationNumber";
+		Hashtext = Hash(plaintext);
+		write Hashtext to individual logfile.
+
+	}
+
+	print to individual log file that task has finished.
+	print to main log file that task has finished.
+}

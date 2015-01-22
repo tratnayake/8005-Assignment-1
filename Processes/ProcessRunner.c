@@ -41,7 +41,7 @@ int main (int argc, char *argv[])
     }  
 
     //Delete any existing log files
-    system("exec rm -r /ProcessFiles/*.txt");   
+    system("exec rm -r ./ProcessFiles/*.txt");   
 
     
 

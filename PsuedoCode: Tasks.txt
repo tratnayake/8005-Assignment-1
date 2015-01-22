@@ -1,0 +1,45 @@
+PsuedoCode: Tasks
+
+//threadObject structure
+threadObject= {Name of the thread: "Thread1", Number of iterations: number of times to hash}
+
+Main(number of processes, number of iterations){
+	
+	- Write to main log file the starting time.
+
+	- Create the thread objects that contain name of thread, and number of iterations.
+
+	- Create the threads, arguments to do runTask and supply the thread object.
+
+	- join each thread to make sure that the program waits till they finish.
+	
+	- Write to main log file timestamp once all threads completed.
+	
+}
+
+run the task(threadObject){
+
+	- do a sched yield to make sure that we yield to other processes once this one finishes.
+
+	- lock resources to execute thread.
+
+
+	print to main log file that task has started
+	print to individual log file that task has started
+
+	(loop from 0 - number of iterations){
+
+		plaintext = Concatenate "HASHSTRING"+IterationNumber";
+		Hashtext = Hash(plaintext);
+		write Hashtext to individual logfile.
+
+	}
+
+	print to individual log file that task has finished.
+	print to main log file that task has finished.
+
+	- unlock resources
+
+}
+	
+	
