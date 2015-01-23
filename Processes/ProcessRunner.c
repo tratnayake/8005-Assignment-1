@@ -142,7 +142,7 @@ int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile){
     processStartTime = time(NULL);
     printf("** PROCESS: %d START** TIME %s \n\n",processID,asctime(localtime(&processStartTime)));
     fprintf(fp, "PROCESS START: processID: %d TIME: %s \n", processID, asctime(localtime(&processStartTime)));
-    fprintf(pFile, "PROCESS %d start,%s \n", processID, asctime(localtime(&processStartTime)));
+    //fprintf(pFile, "PROCESS %d start,%s \n", processID, asctime(localtime(&processStartTime)));
 
     //RUN FUNCTION HERE
     for (i = 1; i <= n; i++)
@@ -183,8 +183,8 @@ int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile){
   processEndTime = time(NULL);
     printf("** PROCESS: %d END** TIME %s \n\n",processID,asctime(localtime(&processEndTime)));
     fprintf(fp, "PROCESS END: processID: %d TIME: %s \n", processID, asctime(localtime(&processEndTime)));
-     fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&processEndTime)));
-     fflush(pFile);
+     //fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&processEndTime)));
+     //fflush(pFile);
      
     return 0; 
 }

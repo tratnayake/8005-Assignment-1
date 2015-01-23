@@ -34,7 +34,7 @@ int main (int argc, char *argv[])
 
   FILE *pFile;
 
-  pFile = fopen("./ThreadLogFile.txt","w");
+  pFile = fopen("./ThreadLogFile.txt","a");
 
   time_t programStartTime;
   time_t programEndTime;
@@ -58,7 +58,7 @@ int main (int argc, char *argv[])
   printf("** THREADS PROGRAM START** TIME: %s  \n\n",asctime( localtime(&programStartTime)));
   fprintf(pFile,"Threads\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&programStartTime));
   fflush(pFile);
-  fclose(pFile);
+  //fclose(pFile);
 
   pthread_t thread1, thread2,thread3,thread4,thread5;
   
@@ -136,9 +136,9 @@ void* runTask (void* threadObj)
     //RUN FUNCTION HERE
    
    FILE *fp;
-   FILE *pFile;
+   //FILE *pFile;
 
-   pFile = fopen("ThreadLogFile.txt","a");
+   //pFile = fopen("./ThreadLogFile.txt","a");
 
    //Vars required to get currentDateTime
    time_t threadTime;
@@ -158,8 +158,8 @@ void* runTask (void* threadObj)
    threadTime = time(NULL);
    printf("** %s START** TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadTime)));
    fprintf(fp, "THREAD START: %s TIME: %s \n", threadName, asctime(localtime(&threadTime)));
-   fprintf(pFile,"%s start,%s\n",(char*) threadName,asctime( localtime(&threadTime)));
-   fflush(pFile);
+   //fprintf(pFile,"%s start,%s\n",(char*) threadName,asctime( localtime(&threadTime)));
+   
 
  
    
@@ -205,8 +205,8 @@ void* runTask (void* threadObj)
      threadEndTime = time(NULL);
       printf("** %s END** TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
       fprintf(fp," %s END TIME: %s  \n\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
-      fprintf(pFile,"%s end,%s\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
-      fflush(pFile);
+      //fprintf(pFile,"%s end,%s\n",(char*) threadName,asctime( localtime(&threadEndTime) ) );
+      //fflush(pFile);
   
     //fclose(fp);
 
