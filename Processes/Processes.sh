@@ -14,7 +14,7 @@ COUNTER=1
      echo "Log file is"
     mkdir "./logfiles"
     today=`date '+%Y_%m_%d__%H_%M_%S'`;
-    filename="./logfiles/$testFolder/Processes$today.txt"
+    filename="./logfiles/$testFolder/Processes$today.csv"
     echo $filename;
 
     echo "Making ProcessFiles folder"
@@ -35,12 +35,12 @@ COUNTER=1
     for ix in ${!array[*]}
     do
         now="$(date +'%T')"
-        printf "Test %s Case  %d :%s hash iterations\n" "$COUNTER" "$ix" "${array[$ix]}"
-        printf "Test %s  Iterations %s | START time %s \n" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
+        printf "Test %s PROCESSES Case  %d :%s hash iterations\n" "$COUNTER" "$ix" "${array[$ix]}"
+        printf "Test %s PROCESSES,Iterations,%s,START,%s" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
         ./ProcessRunner ${array[$ix]}
-        printf "Test %s  Case  %d :%s hash iterations FINISHED\n\n" "$COUNTER" "$ix" "${array[$ix]}"
+        printf "Test %s PROCESSES  Case  %d :%s hash iterations FINISHED\n\n" "$COUNTER" "$ix" "${array[$ix]}"
         now="$(date +'%T')"
-        printf "Test %s  Iterations %s | END time %s \n" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
+        printf "Test %s PROCESSES,Iterations %s,END,%s" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
         sleep 4
         rm -r ./ProcessFiles/*.txt
 

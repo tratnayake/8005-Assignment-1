@@ -141,6 +141,8 @@ void* runTask (void* threadObj)
   //pthread_mutex_lock (&printfLock);
 
   //PASTE CODE
+
+
     //Vars required for the fileName and Looping
     //char fileNumString[sizeof(fileNum)];
     char loopCounterString[100];
@@ -185,8 +187,7 @@ void* runTask (void* threadObj)
       //Add value of i  (concatenate) to END of string
       strcat(data,loopCounterString);
       size_t length = sizeof(data);
-      //Print string+i
-      //printf("Thing to hash is %s",data);
+  
       iterationStartTime = time(NULL);
       fprintf(fp, "ITERATION %ld | TIME: %s \n", i, asctime (localtime(&iterationStartTime)) );
      
@@ -215,9 +216,6 @@ void* runTask (void* threadObj)
   threadEndTime = time(NULL);
     printf("** %s END** TIME %s \n\n",threadName,asctime(localtime(&threadEndTime)));
     fprintf(fp, "%s END: TIME: %s \n", threadName, asctime(localtime(&threadEndTime)));
-     //fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&threadEndTime)));
-     //fflush(pFile);
-     
 
 
 

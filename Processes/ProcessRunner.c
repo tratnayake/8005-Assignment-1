@@ -52,9 +52,10 @@ int main (int argc, char *argv[])
     fprintf(pFile,"Processes\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&programStartTime));
     fflush(pFile);
 
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; i++){
       if ((childpid = fork()) <= 0)
       break;
+  }
     
       //printf("ChildPID: %ld \n",(long)childpid);
       switch((long)childpid)

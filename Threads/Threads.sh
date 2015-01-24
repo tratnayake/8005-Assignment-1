@@ -18,7 +18,7 @@ COUNTER=1
 	echo "Log file is"
 	mkdir "./logfiles"
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
-	filename="./logfiles/$testFolder/Threads$today.txt"
+	filename="./logfiles/$testFolder/Threads$today.csv"
 	echo $filename;
 
 	echo "Making ThreadFiles folder"
@@ -40,13 +40,13 @@ COUNTER=1
 	for ix in ${!array[*]}
 	do
 			
-	    now="$(date +'%T')"
-	    printf "Test %s Case  %d :%s hash iterations\n" "$COUNTER" "$ix" "${array[$ix]}"
-        printf "Test %s  Iterations %s | START time %s \n" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
+	     now="$(date +'%T')"
+        printf "Test %s THREADS Case  %d :%s hash iterations\n" "$COUNTER" "$ix" "${array[$ix]}"
+        printf "Test %s THREADS,Iterations,%s,START,%s" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
         ./ThreadRunner ${array[$ix]}
-        printf "Test %s  Case  %d :%s hash iterations FINISHED\n\n" "$COUNTER" "$ix" "${array[$ix]}"
+        printf "Test %s THREADS Case  %d :%s hash iterations FINISHED\n\n" "$COUNTER" "$ix" "${array[$ix]}"
         now="$(date +'%T')"
-        printf "Test %s  Iterations %s | END time %s \n" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
+        printf "Test %s THREADS,Iterations %s,END,%s" "$COUNTER" "${array[$ix]}" "$now" >> $filename;
         sleep 4
 	    rm ./ThreadFiles/*.txt
 
