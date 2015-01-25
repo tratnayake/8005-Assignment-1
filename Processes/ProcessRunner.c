@@ -1,3 +1,26 @@
+/* ----------------------------------------------------------------------------
+SOURCE FILE
+
+Name:           ProcessRunner.c
+
+Program:        a1 (COMP 8005, Threads vs Processes)
+
+Developer:      Thilina Ratnayake
+
+Due date:       26 Jan 2015
+
+Functions:
+        int main (int argc, char* argv[])
+        int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile)
+
+
+Description:
+        This program gets invoked by the Processes.sh script and runs the task with 5 
+        child processes for the desired amount of iterations.
+
+
+---------------------------------------------------------------------------- */
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,30 +30,19 @@
 #include <sys/wait.h>
 #include <string.h>
 
+/*----------- Function Prototypes ------------------*/
 int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile);
 
 int main (int argc, char *argv[]) 
 {
     pid_t childpid = 0; 
     int i, n, status;
-
     long hashIterations;
-
-
-
-  
-    //pid_t pid;
-
-    //Creating space for vars that will be used later to dicate fileNumber and Process Number in outputfiles.
-    //char fileNumber[50];
-    
-
-    //For dateTime
     time_t programStartTime;
-    time(&programStartTime);
-
+    time_t programEndTime;
     FILE *pFile;
 
+    //"The 'Main' log file that is present for all the iterations.
     pFile = fopen("ProcessLogFile.txt","a");
 
 
@@ -43,49 +55,45 @@ int main (int argc, char *argv[])
     //Delete any existing log files
     system("exec rm -r ./ProcessFiles/*.txt");   
 
-    
-
+    //Set hashIterations to user input.
     hashIterations = atol(argv[1]);
+
+    //The amount of children to create
     n = 5;  
 
+    time(&programStartTime);
     printf("** PROCESSES PROGRAM WITH NUMBER OF ITERATIONS: %ld START TIME: %s \n", hashIterations, ctime(&programStartTime));
     fprintf(pFile,"Processes\nIterations,%ld\nProgram Start,%s\n", hashIterations, ctime(&programStartTime));
     fflush(pFile);
 
+    //Fork the required amount of children
     for (i = 0; i < n; i++){
       if ((childpid = fork()) <= 0)
       break;
-  }
+    }
     
-      //printf("ChildPID: %ld \n",(long)childpid);
+      //switch on the PID's provided by the fork.
       switch((long)childpid)
       {
+        //If an error occured during the fork.
         case -1:
           perror("ERROR!\n");
           break;
 
+        //If a child
         case 0:
-          //printf("I'm a child!\n");
-          //fprintf(stderr, "**CHILD** i:%d  process ID:%ld  parent ID:%ld  child ID:%ld\n",
-           //i, (long)getpid(), (long)getppid(), (long)childpid);
-
           runTask(i,(long)getpid(),hashIterations,pFile);
-
           break;
 
+        //Parent
         default:
-          //printf("I'm not a child?\n");
-          //printf("**PARENT**: i:%d  process ID:%ld  parent ID:%ld  child ID:%ld\n",
-           //i, (long)getpid(), (long)getppid(), (long)childpid);
-
-          
+            
+          //Wait for all children to finish
           while (n > 0) {
             wait(&status);
-            //printf("Child with PID %ld exited with status 0x%x.\n", (long)pid, status);
-            --n;  // TODO(pts): Remove pid from the pids array.
+            --n;  
           }
 
-          time_t programEndTime;
 
           time(&programEndTime);
           
@@ -100,48 +108,36 @@ int main (int argc, char *argv[])
 }
 
 int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile){
-   FILE *fp;
-
-
+   
+    FILE *fp;
     //Vars taken from Program Start
     int fileNum = fileNumber;
     int processID = processNumber;
     long i,n;
     int x;
     n = iterations;
-
-
     //Vars required for the fileName and Looping
     char fileNumString[sizeof(fileNum)];
     char loopCounterString[100];
-
-  
-
     time_t processStartTime;
     time_t processEndTime;
     time_t iterationStartTime;
     time_t iterationEndTime;
-
-
-
     char outputFileName[1024];
-    strcpy(outputFileName, "./ProcessFiles/ProcessTaskOutputFile");
-    //Convert fileNum INT into a String
-          //DEBUG: printf("Before convert,fileNumString: %s",fileNumString);
-    sprintf(fileNumString,"%d",fileNum);
-          //DEBUG: printf("After convert,fileNumString: %s",fileNumString);
-    strcat(outputFileName, fileNumString);
-    strcat(outputFileName,".txt");
-
     char data[1024];    
     char hash[SHA_DIGEST_LENGTH];
 
-    //DEBUG: printf("Before print, the fileOutputName is: %s",outputFileName);
 
-    fp = fopen(outputFileName, "w");// "w" means that we are going to write on this file
+    //Craft the output file names e.g. ./ProcessFiles/ProcessTaskOutputFile1.txt
+    strcpy(outputFileName, "./ProcessFiles/ProcessTaskOutputFile");
+    //Convert fileNum INT into a String
+    sprintf(fileNumString,"%d",fileNum);
+    strcat(outputFileName, fileNumString);
+    strcat(outputFileName,".txt");
 
     processStartTime = time(NULL);
     printf("** PROCESS: %d START** TIME %s \n\n",processID,asctime(localtime(&processStartTime)));
+    fp = fopen(outputFileName, "w");// "w" means that we are going to write on this file
     fprintf(fp, "PROCESS START: processID: %d TIME: %s \n", processID, asctime(localtime(&processStartTime)));
     //fprintf(pFile, "PROCESS %d start,%s \n", processID, asctime(localtime(&processStartTime)));
 
@@ -154,23 +150,17 @@ int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile){
       //Add value of i  (concatenate) to END of string
       strcat(data,loopCounterString);
       size_t length = sizeof(data);
-      //Print string+i
-      //printf("Thing to hash is %s",data);
       iterationStartTime = time(NULL);
       fprintf(fp, "ITERATION %ld | TIME: %s \n", i, asctime (localtime(&iterationStartTime)) );
      
-      
+      //HASH
       SHA((unsigned char*) data,length,(unsigned char*) hash);
 
-
-
-      //printf("The hash is %x \n",hash);
       fprintf(fp,"PLAINTEXT: %s\n",data);
       fprintf(fp,"HASH:\n");
 
       for(x = 0; x < sizeof(hash); x++ )
       {
-     
         fprintf(fp,"%x", (char)hash[x]);
       }
       
@@ -184,8 +174,6 @@ int runTask(int fileNumber, long processNumber, long iterations, FILE *pFile){
   processEndTime = time(NULL);
     printf("** PROCESS: %d END** TIME %s \n\n",processID,asctime(localtime(&processEndTime)));
     fprintf(fp, "PROCESS END: processID: %d TIME: %s \n", processID, asctime(localtime(&processEndTime)));
-     //fprintf(pFile, "PROCESS %d end,%s \n", processID, asctime(localtime(&processEndTime)));
-     //fflush(pFile);
-     
+  
     return 0; 
 }
