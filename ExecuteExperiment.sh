@@ -20,6 +20,10 @@ if [ $EUID != 0 ]; then
     exit $?
 fi
 
+echo "Installing dependencies"
+yum -y install openssl-devel
+echo "Finished installing dependencies"
+
 echo "Please enter the amount of times you would like to run the tests: "
 read input_variable
 echo "You entered: $input_variable"
